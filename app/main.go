@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vextor22/gamepicker/app/steamconnector"
 	"log"
 	"net/http"
 )

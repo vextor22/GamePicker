@@ -1,9 +1,9 @@
 FROM golang:1.14.2 AS build_base
 RUN mkdir /app 
-RUN mkdir /app/restservice
+RUN mkdir /app/steam-connector
 WORKDIR /app
 COPY go.mod .
-COPY ./restservice/go.mod ./restservice/.
+COPY ./steam-connector/go.mod ./steam-connector/.
 COPY go.sum . 
 RUN go mod download
 
