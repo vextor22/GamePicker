@@ -1,3 +1,4 @@
+github.com/go-yaml/yaml v2.1.0+incompatible/go.mod h1:w2MrLa16VYP0jy6N7M5kHaCkaLENm+P+Tv+MfurjSw0=
 github.com/gorilla/mux v1.7.4 h1:VuZ8uybHlWmqV03+zRzdwKL4tUnIp1MAQtp1mIFE1bc=
 github.com/gorilla/mux v1.7.4/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
 github.com/vextor22/gamepicker v0.0.0-20200507205230-89be42819d65 h1:wgl8CxkkJkMKFt2dsWP2Ym5OnpsCfPCV54CKYj+/UQg=

@@ -1,9 +1,9 @@
 FROM golang:1.14.2 AS build_base
 RUN mkdir /app 
-RUN mkdir /app/steam-connector
+RUN mkdir /app/steamconnector
 WORKDIR /app
 COPY go.mod .
-COPY ./steam-connector/go.mod ./steam-connector/.
+COPY ./steamconnector/go.mod ./steamconnector/.
 COPY go.sum . 
 RUN go mod download
 
@@ -15,5 +15,5 @@ RUN pwd
 
 FROM ubuntu:xenial as app_server
 COPY --from=server_builder /app/app_main /bin/server
-COPY --from=server_builder /app/config.yaml /bin/config.yaml
+COPY --from=server_builder /app/config.yml /bin/config.yml
 ENTRYPOINT ["/bin/server"]

@@ -11,6 +11,7 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.NotFoundHandler = http.HandlerFunc(notFound)
+	steamconnector.RegisterSteamEndpoints(r)
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
