@@ -6,7 +6,7 @@ services:
       build: ./nginx
       volumes:
           - ./nginx/conf/site.conf:/etc/nginx/conf.d/site.conf
-          - ./nginx/static/:/var/www/static
+          - ./static/:/var/www/static
       ports:
          - "80:83"
   mongo:
