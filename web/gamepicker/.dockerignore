@@ -1,0 +1,9 @@
+**/build
+**/config
+**/dist
+**/node_modules
+**/src
+**/static
+**/test
+index.html
+README.md
