@@ -3,12 +3,9 @@ services:
   web:
     build: ./app
   proxy:
-      build: ./nginx
-      volumes:
-          - ./nginx/conf/site.conf:/etc/nginx/conf.d/site.conf
-          - ./static/:/var/www/static
+      build: ./web/gamepicker
       ports:
-         - "80:83"
+         - "80:80"
   mongo:
       image: "mongo:3.4-xenial"
       volumes:
