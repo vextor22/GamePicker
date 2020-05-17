@@ -3,7 +3,7 @@ services:
   web:
     build: ./app
   proxy:
-      build: ./web/gamepicker
+      build: ./web
       ports:
          - "80:80"
   mongo:
