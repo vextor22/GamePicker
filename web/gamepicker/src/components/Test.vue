@@ -1,26 +1,21 @@
 <template>
   <div id="app">
     <h1>{{ msg }}</h1>
-    <app-test></app-test>
   </div>
 </template>
 
 <script>
-import Test from './components/Test.vue'
 export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App again'
+      msg: 'Inner component'
     }
-  },
-  components: {
-    'appTest': Test,
   }
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
