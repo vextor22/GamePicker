@@ -3,9 +3,7 @@ services:
   app:
     build: ./app
   proxy:
-      build: 
-        context: ./web
-        dockerfile: DevDockerfile
+      build: ./web/proxy
       ports:
         - "80:80"
   devserver:
