@@ -1,10 +1,11 @@
 package steamconnector
 
 import (
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"path/filepath"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -27,7 +28,6 @@ func init() {
 	}
 	err = yaml.Unmarshal(handle, &AppConfig)
 	if err != nil {
-		log.Printf("Ahh, ouch")
+		log.Printf("No config loaded")
 	}
-	log.Printf("Key is: %v", AppConfig)
 }
