@@ -2,18 +2,20 @@
   <div id="app">
     <h1>{{ msg }}</h1>
     <app-test></app-test>
-    <p
-      v-for="(game, index) in info.games"
-      :key="index"
-    >{{ game.name}}: {{ (game.playtime_forever / 60).toFixed(0) }} Hours</p>
+    <div v-if="info">
+      <p
+        v-for="(game, index) in info.games"
+        :key="index"
+      >{{ game.name}}: {{ (game.playtime_forever / 60).toFixed(0) }} Hours</p>
+    </div>
     <p>poop</p>
   </div>
 </template>
 
 <script>
+import Test from "./components/Test.vue";
 const axios = require("axios").default;
 
-import Test from "./components/Test.vue";
 export default {
   name: "app",
   data() {
