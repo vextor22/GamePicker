@@ -24,7 +24,7 @@ export default {
   },
   mounted() {
     axios
-      .get("http://localhost/app/user/76561197995406081")
+      .get("./app/user/76561197995406081")
       .then(response => (this.info = response.data.response.games));
   }
 };
