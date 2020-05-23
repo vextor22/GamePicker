@@ -2,7 +2,10 @@
   <div id="app">
     <h1>{{ msg }}</h1>
     <app-test></app-test>
-    <p v-for="(game, index) in info" :key="index">{{ game.appid }}: {{ game.playtime_forever }}</p>
+    <p
+      v-for="(game, index) in info.games"
+      :key="index"
+    >{{ game.name}}: {{ (game.playtime_forever / 60).toFixed(0) }} Hours</p>
     <p>poop</p>
   </div>
 </template>
@@ -25,7 +28,7 @@ export default {
   mounted() {
     axios
       .get("./app/user/76561197995406081")
-      .then(response => (this.info = response.data.response.games));
+      .then(response => (this.info = response.data));
   }
 };
 </script>

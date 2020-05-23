@@ -1,1 +1,2 @@
 key: <STEAM KEY HERE>
+mongo_uri: "mongodb://<SOME URI>
