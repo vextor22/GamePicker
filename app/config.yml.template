@@ -1,3 +1,3 @@
 key: <STEAM KEY HERE>
-mongo_uri: "mongodb://<SOME URI>
+mongo_uri: "mongodb://mongo"
 cache_duration: "10m"
