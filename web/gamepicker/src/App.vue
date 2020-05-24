@@ -1,19 +1,18 @@
 <template>
-  <div id="app">
+  <div id="app" class="container">
     <h1>{{ msg }}</h1>
-    <app-test></app-test>
+    <user-submit @submitSteamID="requestUserData"></user-submit>
     <div v-if="info">
       <p
         v-for="(game, index) in info.games"
         :key="index"
-      >{{ game.name}}: {{ (game.playtime_forever / 60).toFixed(0) }} Hours</p>
+      >{{ game.name}}: {{ (game.playtime_forever / 60).toFixed(2) }} Hours</p>
     </div>
-    <p>poop</p>
   </div>
 </template>
 
 <script>
-import Test from "./components/Test.vue";
+import UserSubmit from "./components/UserSubmit.vue";
 const axios = require("axios").default;
 
 export default {
@@ -24,13 +23,15 @@ export default {
       info: null
     };
   },
-  components: {
-    appTest: Test
+  methods: {
+    requestUserData(event) {
+      axios
+        .get(`./app/user/${event}`)
+        .then(response => (this.info = response.data));
+    }
   },
-  mounted() {
-    axios
-      .get("./app/user/76561197995406081")
-      .then(response => (this.info = response.data));
+  components: {
+    userSubmit: UserSubmit
   }
 };
 </script>
