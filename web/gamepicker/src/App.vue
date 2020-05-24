@@ -1,8 +1,22 @@
 <template>
-  <div id="app" class="container">
+  <div id="app" class="container-fluid">
     <h1>{{ msg }}</h1>
     <user-submit @submitSteamID="requestUserData"></user-submit>
-    <game-list :_games="info.games"></game-list>
+    <div class="row justify-content-sm-center" style="margin: 20px;">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <div class="card">
+
+          <game-list :_games="info.games"></game-list>
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <div class="card">
+
+          <game-list :_games="info.games"></game-list>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,7 +47,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

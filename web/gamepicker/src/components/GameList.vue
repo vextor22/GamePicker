@@ -1,5 +1,5 @@
 <template>
-  <div class="card row justify-content-sm-center">
+  <div class="row justify-content-sm-center">
     <ul v-if="games" class="list-group game-list" style>
       <li
         class="list-group-item text-left"
@@ -7,7 +7,7 @@
         :key="index"
       >{{ game.name}}: {{ (game.playtime_forever / 60).toFixed(2) }} Hours</li>
     </ul>
-    <div class="card align-items-center" v-else>
+    <div class="align-items-center" v-else>
       <div class="card-text">
         <h2>Instructions</h2>
         <p>

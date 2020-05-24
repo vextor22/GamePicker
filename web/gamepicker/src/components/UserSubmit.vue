@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script>
+<script scoped>
 export default {
   data() {
     return {
