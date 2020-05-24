@@ -6,10 +6,11 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type key int
@@ -20,8 +21,9 @@ const (
 
 // Config type contains application configs
 type Config struct {
-	APIKey   string `yaml:"key"`
-	MongoURI string `yaml:"mongo_uri"`
+	APIKey        string        `yaml:"key"`
+	MongoURI      string        `yaml:"mongo_uri"`
+	CacheDuration time.Duration `yaml:"cache_duration"`
 }
 
 // AppConfig is the global variable used to access configs

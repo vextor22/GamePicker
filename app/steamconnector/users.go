@@ -3,6 +3,7 @@ package steamconnector
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -59,15 +60,29 @@ func createUser(user string, resp *http.Response) User {
 
 func userLookup(w http.ResponseWriter, r *http.Request) {
 
-	client := &http.Client{}
 	params := mux.Vars(r)
 	userID := params["id"]
-	log.Printf("Request: %v", userID)
+	user, err := getUserFromDB(r.Context(), userID)
+	if err != nil {
+		// User could not be retrieved from database, reach out to Steam API
+		user, err = getUserFromSteam(r.Context(), userID)
+		if err != nil {
+			log.Printf("ERROR retrieving user from steam: %v", err)
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	j, _ := json.Marshal(user)
+	w.Write(j)
+}
+
+func getUserFromSteam(ctx context.Context, userID string) (User, error) {
+	var user User
+	client := &http.Client{}
 
 	req, err := http.NewRequest("GET", "http://api.steampowered.com/IPlayerService/GetOwnedGames/v1", nil)
 	if err != nil {
-		log.Printf("Error generating request string: %v", err)
-		return
+		return user, err
 	}
 	q := req.URL.Query()
 	q.Add("key", AppConfig.APIKey)
@@ -75,20 +90,36 @@ func userLookup(w http.ResponseWriter, r *http.Request) {
 	q.Add("steamid", userID)
 	req.URL.RawQuery = q.Encode()
 
-	log.Printf("Request URL: %v", req.URL.String())
-
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("Error doing request: %v", err)
-		return
+		return user, err
 	}
-	user := createUser(userID, resp)
 
-	storeUser(r.Context(), &user)
+	user = createUser(userID, resp)
+	storeUser(ctx, &user)
+	return user, nil
+}
 
-	w.Header().Set("Content-Type", "application/json")
-	j, _ := json.Marshal(user)
-	w.Write(j)
+func getUserFromDB(ctx context.Context, userID string) (User, error) {
+
+	client := ctx.Value(mongoKey).(*mongo.Client)
+	database := client.Database("gamepicker")
+	steamUserData := database.Collection("steamUsers")
+
+	user := User{}
+	err := steamUserData.FindOne(ctx, bson.D{bson.E{"_id", userID}}).Decode(&user)
+	if err != nil {
+		log.Printf("Error finding user %v", err)
+		return user, err
+	}
+	age := time.Now().Sub(user.LastUpdated)
+	if age >= AppConfig.CacheDuration {
+		return user, fmt.Errorf("User older than %v, please refresh", AppConfig.CacheDuration)
+
+	}
+
+	return user, nil
+
 }
 
 func storeUser(ctx context.Context, user *User) {
@@ -99,10 +130,8 @@ func storeUser(ctx context.Context, user *User) {
 
 	opts := options.Replace().SetUpsert(true)
 	filter := bson.D{bson.E{"_id", user.ID}}
-	insertResult, err := steamUserData.ReplaceOne(ctx, filter, user, opts)
+	_, err := steamUserData.ReplaceOne(ctx, filter, user, opts)
 	if err != nil {
 		log.Printf("Error inserting user: %v", err)
 	}
-	log.Printf("User inserted: %v", insertResult.UpsertedID)
-
 }
