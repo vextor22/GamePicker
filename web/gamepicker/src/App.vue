@@ -19,7 +19,7 @@ export default {
   name: "app",
   data() {
     return {
-      msg: "Welcome to Your Vue.js App again",
+      msg: "Steam Game Picker",
       info: null
     };
   },
