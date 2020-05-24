@@ -24,9 +24,10 @@ type User struct {
 
 // Game type contains information about a User's game
 type Game struct {
-	ID       int    `json:"appid" bson:"appid"`
-	Name     string `json:"name" bson:"game_name"`
-	PlayTime int    `json:"playtime_forever" bson:"playtime_forever"`
+	ID        int    `json:"appid" bson:"appid"`
+	Name      string `json:"name" bson:"game_name"`
+	PlayTime  int    `json:"playtime_forever" bson:"playtime_forever"`
+	ImageLogo string `json:"img_logo_url" bson:"image_logo_url"`
 }
 
 // SteamUserGameListResponse is used to unmarshal the response provided by the steam user games API

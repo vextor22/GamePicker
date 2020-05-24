@@ -2,13 +2,13 @@
   <div class="card-body game-card">
     <h2 class="card-title">Random Game</h2>
     <div class="row">
-      <div class="row" style="width: 100%;" v-if="game">
+      <div class="row" style="width: 100%;" v-if="gameIndex">
         <div class="game-display">
           <div>
-            <img alt="Game Logo" class="image" />
+            <img alt="Game Logo" :src="gameLogo" class="image" />
           </div>
           <div class="description">
-            <p :key="rerender">{{ game.name }}</p>
+            <p>{{ _games[gameIndex].name }}</p>
           </div>
         </div>
         <div class="align-left">
@@ -45,11 +45,16 @@ export default {
     }
   },
   computed: {
-    game() {
+    gameIndex() {
       if (this._games) {
-        return this._games[this.randomInt(this._games.length)];
+        return this.randomInt(this._games.length);
       }
       return null;
+    },
+    gameLogo() {
+      return `http://media.steampowered.com/steamcommunity/public/images/apps/${
+        this._games[this.gameIndex].appid
+      }/${this._games[this.gameIndex].img_logo_url}.jpg`;
     }
   }
 };
@@ -79,13 +84,13 @@ h2 {
 
 .description {
   border-left: 2px solid black;
-  margin-left: 95px;
+  margin-left: 170px;
   height: 100px;
 }
 .image {
   margin: 5px 5px 5px 5px;
   height: 80px;
-  width: 80px;
+  width: 160px;
   float: left;
   background-color: black;
 }
