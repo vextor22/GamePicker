@@ -1,6 +1,6 @@
 <template>
-  <div class="row justify-content-sm-center">
-    <ul v-if="games" class="list-group game-list" style>
+  <div class="row justify-content-sm-center game-list">
+    <ul v-if="games" class="list-group" style>
       <li
         class="list-group-item text-left"
         v-for="(game, index) in games"

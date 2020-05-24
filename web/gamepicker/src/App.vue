@@ -3,17 +3,14 @@
     <h1>{{ msg }}</h1>
     <user-submit @submitSteamID="requestUserData"></user-submit>
     <div class="row justify-content-sm-center" style="margin: 20px;">
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-          <div class="card">
-
-          <game-list :_games="info.games"></game-list>
-          </div>
+      <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+        <div class="card">
+          <random-game :key="rerender" :_games="info.games" @rerender="rerender = Math.random();"></random-game>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-          <div class="card">
-
+      </div>
+      <div class="col-xs-7 col-sm-7 col-md-5 col-lg-5">
+        <div class="card">
           <game-list :_games="info.games"></game-list>
-          </div>
         </div>
       </div>
     </div>
@@ -23,6 +20,7 @@
 <script>
 import UserSubmit from "./components/UserSubmit.vue";
 import GameList from "./components/GameList.vue";
+import RandomGame from "./components/RandomGame.vue";
 const axios = require("axios").default;
 
 export default {
@@ -30,7 +28,8 @@ export default {
   data() {
     return {
       msg: "Steam Game Picker",
-      info: {}
+      info: {},
+      rerender: 0
     };
   },
   methods: {
@@ -42,6 +41,7 @@ export default {
   },
   components: {
     userSubmit: UserSubmit,
+    randomGame: RandomGame,
     gameList: GameList
   }
 };
