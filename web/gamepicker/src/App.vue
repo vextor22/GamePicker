@@ -2,17 +2,13 @@
   <div id="app" class="container">
     <h1>{{ msg }}</h1>
     <user-submit @submitSteamID="requestUserData"></user-submit>
-    <div v-if="info">
-      <p
-        v-for="(game, index) in info.games"
-        :key="index"
-      >{{ game.name}}: {{ (game.playtime_forever / 60).toFixed(2) }} Hours</p>
-    </div>
+    <game-list :_games="info.games"></game-list>
   </div>
 </template>
 
 <script>
 import UserSubmit from "./components/UserSubmit.vue";
+import GameList from "./components/GameList.vue";
 const axios = require("axios").default;
 
 export default {
@@ -20,7 +16,7 @@ export default {
   data() {
     return {
       msg: "Steam Game Picker",
-      info: null
+      info: {}
     };
   },
   methods: {
@@ -31,7 +27,8 @@ export default {
     }
   },
   components: {
-    userSubmit: UserSubmit
+    userSubmit: UserSubmit,
+    gameList: GameList
   }
 };
 </script>
