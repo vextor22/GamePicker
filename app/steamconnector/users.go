@@ -14,6 +14,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+type steamUserFetch struct {
+	userFetch User
+	ctx       context.Context
+	err       error
+}
+
+var (
+	fetch   = make(chan steamUserFetch)
+	fetched = make(chan steamUserFetch)
+)
+
 // User type contains information related to steam UserId
 type User struct {
 	ID          string    `json:"userid" bson:"_id"`
@@ -36,7 +47,11 @@ type SteamUserGameListResponse struct {
 	Response struct {
 		GameCount int    `json:"game_count"`
 		GameList  []Game `json:"games"`
-	} `json:"response`
+	} `json:"response"`
+}
+
+func init() {
+	initUserRequestRoutine()
 }
 
 // RegisterSteamEndpoints registers steam request endpoints with the router
@@ -65,10 +80,12 @@ func userLookup(w http.ResponseWriter, r *http.Request) {
 	user, err := getUserFromDB(r.Context(), userID)
 	if err != nil {
 		// User could not be retrieved from database, reach out to Steam API
-		user, err = getUserFromSteam(r.Context(), userID)
-		if err != nil {
-			log.Printf("ERROR retrieving user from steam: %v", err)
+		fetch <- steamUserFetch{userFetch: user, ctx: r.Context()}
+		userResponse := <-fetched
+		if userResponse.err != nil {
+			log.Printf("ERROR retrieving user from steam: %v", userResponse.err)
 		}
+		user = userResponse.userFetch
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -76,28 +93,35 @@ func userLookup(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
-func getUserFromSteam(ctx context.Context, userID string) (User, error) {
-	var user User
-	client := &http.Client{}
+func initUserRequestRoutine() {
 
-	req, err := http.NewRequest("GET", "http://api.steampowered.com/IPlayerService/GetOwnedGames/v1", nil)
-	if err != nil {
-		return user, err
-	}
-	q := req.URL.Query()
-	q.Add("key", AppConfig.APIKey)
-	q.Add("include_appinfo", "true")
-	q.Add("steamid", userID)
-	req.URL.RawQuery = q.Encode()
+	go func() {
+		for {
 
-	resp, err := client.Do(req)
-	if err != nil {
-		return user, err
-	}
+			userRequest := <-fetch
+			client := &http.Client{}
 
-	user = createUser(userID, resp)
-	storeUser(ctx, &user)
-	return user, nil
+			req, err := http.NewRequest("GET", "http://api.steampowered.com/IPlayerService/GetOwnedGames/v1", nil)
+			if err != nil {
+				fetched <- steamUserFetch{userFetch: userRequest.userFetch, err: err}
+			}
+			q := req.URL.Query()
+			q.Add("key", AppConfig.APIKey)
+			q.Add("include_appinfo", "true")
+			q.Add("steamid", userRequest.userFetch.ID)
+			req.URL.RawQuery = q.Encode()
+
+			resp, err := client.Do(req)
+			if err != nil {
+				fetched <- steamUserFetch{userFetch: userRequest.userFetch, err: err}
+			}
+
+			userRequest.userFetch = createUser(userRequest.userFetch.ID, resp)
+			storeUser(userRequest.ctx, &userRequest.userFetch)
+			fetched <- steamUserFetch{userFetch: userRequest.userFetch, err: err}
+			time.Sleep(time.Second)
+		}
+	}()
 }
 
 func getUserFromDB(ctx context.Context, userID string) (User, error) {
@@ -106,7 +130,7 @@ func getUserFromDB(ctx context.Context, userID string) (User, error) {
 	database := client.Database("gamepicker")
 	steamUserData := database.Collection("steamUsers")
 
-	user := User{}
+	user := User{ID: userID}
 	err := steamUserData.FindOne(ctx, bson.D{bson.E{"_id", userID}}).Decode(&user)
 	if err != nil {
 		log.Printf("Error finding user %v", err)

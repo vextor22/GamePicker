@@ -69,21 +69,17 @@ export default {
   padding: 5px;
   height: 60vh;
 }
-h2 {
-  background-color: darkorange;
-}
 .game-display {
   min-height: 100px;
   width: 100%;
   border: 2px solid darkgray;
-  background-color: #cccccc;
   padding: 5px;
   box-shadow: 4px 2px 2px gray;
   overflow: hidden;
 }
 
 .description {
-  border-left: 2px solid black;
+  border-left: 2px solid darkgray;
   margin-left: 170px;
   height: 100px;
 }
