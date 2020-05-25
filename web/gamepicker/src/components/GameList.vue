@@ -10,7 +10,7 @@
     <div class="align-items-center" v-else>
       <div class="card-text">
         <h2>Instructions</h2>
-        <h3>How do I know my SteamID?</h3>To get you SteamID:
+        <h3>How do I know my SteamID?</h3>To get your SteamID:
         <div class="row">
           <ol class="list-group">
             <li class="list-group-item text-left">1. Open Steam and navigate to your profile</li>
