@@ -54,7 +54,7 @@ export default {
     gameLogo() {
       return `https://steamcdn-a.akamaihd.net/steam/apps/${
         this._games[this.gameIndex].appid
-      }/logo.png`;
+      }/capsule_sm_120.jpg?t=${Date.now()}`;
     }
   }
 };
