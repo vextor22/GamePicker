@@ -52,9 +52,9 @@ export default {
       return null;
     },
     gameLogo() {
-      return `http://media.steampowered.com/steamcommunity/public/images/apps/${
+      return `https://steamcdn-a.akamaihd.net/steam/apps/${
         this._games[this.gameIndex].appid
-      }/${this._games[this.gameIndex].img_logo_url}.jpg`;
+      }/logo.png`;
     }
   }
 };
