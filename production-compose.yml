@@ -1,13 +1,23 @@
-version: '3'
+version: "3"
 services:
   app:
     build: ./app
   proxy:
-      build: ./web
-      ports:
-         - "80:80"
+    build: ./web
+    ports:
+      - "80:80"
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
   mongo:
-      image: "mongo:3.4-xenial"
-      volumes:
-          - ./mongo/data:/data/db
-      restart: always
+    image: "mongo:3.4-xenial"
+    volumes:
+      - ./mongo/data:/data/db
+    restart: always
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
