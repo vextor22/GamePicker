@@ -10,6 +10,18 @@
     <div class="align-items-center" v-else>
       <div class="card-text">
         <h2>Instructions</h2>
+        <h3>How do I know my SteamID?</h3>To get you SteamID:
+        <div class="row">
+          <ol class="list-group">
+            <li class="list-group-item text-left">1. Open Steam and navigate to your profile</li>
+            <li class="list-group-item text-left">2. Right click your profile and "Copy Page URL"</li>
+            <li class="list-group-item text-left">3. Paste the URL somewhere</li>
+            <li
+              class="list-group-item text-left"
+            >4. Your ID will either be a big number in the URL, or a custom ID. The custom ID should be obvious.</li>
+          </ol>
+        </div>
+        <h3>Privacy Settings</h3>
         <p>
           By default, Steam hides user's game info. To make this information public,
           please update your
