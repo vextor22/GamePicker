@@ -70,9 +70,9 @@ func RegisterSteamEndpoints(r *mux.Router) {
 	r.HandleFunc("/user/{id}", userLookup).Methods("GET")
 }
 
-func createUser(user string, resp *http.Response) User {
+func parseUserGames(user User, resp *http.Response) User {
 
-	userWithGames := User{ID: user}
+	userWithGames := User{ID: user.ID, Vanity: user.Vanity}
 	var games SteamUserGameListResponse
 	err := json.NewDecoder(resp.Body).Decode(&games)
 	if err != nil {
@@ -129,7 +129,7 @@ func initUserRequestRoutine() {
 					fetched <- steamUserFetch{userFetch: userRequest.userFetch, err: err}
 				}
 
-				userRequest.userFetch = createUser(userRequest.userFetch.ID, resp)
+				userRequest.userFetch = parseUserGames(userRequest.userFetch, resp)
 				storeUser(userRequest.ctx, &userRequest.userFetch)
 				fetched <- steamUserFetch{userFetch: userRequest.userFetch, err: err}
 			case userVanityRequest := <-fetchVanity:
@@ -164,7 +164,7 @@ func initUserRequestRoutine() {
 	}()
 }
 
-func getUserIDByVanity(ctx context.Context, userVanity string) (userID string, err error) {
+func fetchUserIDByVanity(ctx context.Context, userVanity string) (userID string, err error) {
 
 	// VanityURL
 	fetchVanity <- steamUserFetch{userFetch: User{Vanity: userVanity}, ctx: ctx}
@@ -178,13 +178,35 @@ func getUserIDByVanity(ctx context.Context, userVanity string) (userID string, e
 	return userID, nil
 }
 
-func getUserFromDB(ctx context.Context, userID string) (User, error) {
-	var user User
-	_, err := strconv.ParseUint(userID, 10, 64)
+func getUserByVanity(ctx context.Context, userVanity string) (user User, err error) {
+	client := ctx.Value(mongoKey).(*mongo.Client)
+	database := client.Database("gamepicker")
+	steamUserData := database.Collection("steamUsers")
+
+	user.Vanity = userVanity
+
+	// Try to find vanity in DB
+	err = steamUserData.FindOne(ctx, bson.D{bson.E{"vanity", user.Vanity}}).Decode(&user)
+	if err != nil {
+		return user, err
+	}
+	log.Printf("User found in db by vanity")
+	return user, nil
+
+}
+
+func getUserFromDB(ctx context.Context, userID string) (user User, err error) {
+
+	// Check if provided ID is a "Vanity" ID
+	_, err = strconv.ParseUint(userID, 10, 64)
 	if err != nil {
 		userVanity := userID //ID is a Vanity ?
-		user.Vanity = userVanity
-		userID, err = getUserIDByVanity(ctx, userVanity)
+		user, err = getUserByVanity(ctx, userVanity)
+		if err == nil {
+			return user, nil
+		}
+		// Otherwise, get ID by Vanity from SteamAPI
+		userID, err = fetchUserIDByVanity(ctx, userVanity)
 		if err != nil {
 			log.Printf("ERROR: Couldn't resolve vanity: %v", err)
 			return User{}, err
@@ -192,20 +214,11 @@ func getUserFromDB(ctx context.Context, userID string) (User, error) {
 
 	}
 
-	// Try to find vanity in DB
-
 	client := ctx.Value(mongoKey).(*mongo.Client)
 	database := client.Database("gamepicker")
 	steamUserData := database.Collection("steamUsers")
-	err = steamUserData.FindOne(ctx, bson.D{bson.E{"vanity", user.Vanity}}).Decode(&user)
-	if err != nil {
-		log.Printf("Couldn't find user in DB, fetching by ID and saving")
-	} else {
-		log.Printf("User found in db")
-		return user, nil
-	}
-
-	user = User{ID: userID}
+	// Find User In DB by ID
+	user.ID = userID
 	err = steamUserData.FindOne(ctx, bson.D{bson.E{"_id", userID}}).Decode(&user)
 	if err != nil {
 		log.Printf("Error finding user %v", err)
