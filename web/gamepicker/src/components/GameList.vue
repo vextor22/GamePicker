@@ -15,10 +15,7 @@
           <ol class="list-group">
             <li class="list-group-item text-left">1. Open Steam and navigate to your profile</li>
             <li class="list-group-item text-left">2. Right click your profile and "Copy Page URL"</li>
-            <li class="list-group-item text-left">3. Paste the URL somewhere</li>
-            <li
-              class="list-group-item text-left"
-            >4. Your ID will either be a big number in the URL, or a custom ID. The custom ID should be obvious.</li>
+            <li class="list-group-item text-left">3. Paste the URL into the form above.</li>
           </ol>
         </div>
         <h3>Privacy Settings</h3>
