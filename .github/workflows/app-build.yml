@@ -42,7 +42,7 @@ jobs:
           file: app/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
-          tags: vextor22/gamepicker-app:latest
+          tags: vextor22/gamepicker-service:latest
         if: github.ref == 'refs/heads/master'
 
   # This job builds Vue web app
