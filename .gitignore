@@ -1,4 +1,3 @@
-config.yml
 mongo/data
 node_modules
 **/data

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"time"
+	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -45,6 +46,14 @@ func init() {
 	if err != nil {
 		log.Printf("No config loaded")
 	}
+
+	if os.Getenv("STEAM_API") == "" {
+		log.Printf("ERROR: no steam api key provided")
+	} else {
+		log.Printf("Key: %v", os.Getenv("STEAM_API"))
+	}
+	AppConfig.APIKey = os.Getenv("STEAM_API")
+
 }
 
 // AddContext adds a Mongo client to the context of requests

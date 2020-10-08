@@ -88,6 +88,7 @@ func userLookup(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	userID := params["id"]
+	log.Printf("Received request for user: %v", userID)
 
 	user, err := getUserFromDB(r.Context(), userID)
 	if err != nil {
