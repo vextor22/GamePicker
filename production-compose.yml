@@ -2,6 +2,8 @@ version: "3"
 services:
   app:
     image: vextor22/gamepicker-service
+    environment:
+      - STEAM_API=${STEAM_API}
   proxy:
     image: vextor22/gamepicker-web-app
     ports:
