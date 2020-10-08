@@ -42,5 +42,5 @@ jobs:
           file: app/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
-          tags: vextor22/GamePickerApp:latest
+          tags: vextor22/gamepicker-app:latest
         if: github.ref == 'refs/heads/master'
