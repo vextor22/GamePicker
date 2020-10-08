@@ -13,7 +13,7 @@ on:
       - '*'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  # This job builds Go REST service
   build-app:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -43,4 +43,30 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
           tags: vextor22/gamepicker-app:latest
+        if: github.ref == 'refs/heads/master'
+
+  # This job builds Vue web app
+  build-app:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: web/gamepicker/
+          file: web/gamepicker/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/386
+          push: true
+          tags: vextor22/gamepicker-web-app:latest
         if: github.ref == 'refs/heads/master'
